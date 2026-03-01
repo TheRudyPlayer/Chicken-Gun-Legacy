@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+/* Reset total */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Fuente */
+@font-face {
+  font-family: 'Nikumaru';
+  src: url('./assets/07NikumaruFont.ttf') format('truetype');
+}
+
+/* Fondo FIX absoluto */
+body {
+  font-family: 'Nikumaru', sans-serif;
+  background: url('./assets/GreenScreen.png') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Contenedor general */
+.screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+  padding: 3vh 3vw;
+}
+
+.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Botones principales */
+.menu-buttons {
+  margin-top: auto;
+  margin-bottom: 8vh;
+  display: flex;
+  gap: 3vw;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  min-width: 220px;
+  width: 25vw;
+  max-width: 300px;
+  height: 80px;
+  background: #d6d6b5;
+  border: 4px solid #2e2e2e;
+  border-radius: 14px;
+  font-size: clamp(20px, 2.5vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset -4px -6px 0 rgba(0,0,0,0.2);
+  transition: 0.15s;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #e0e0b0, #b5d6b5);
+  box-shadow: inset -4px -6px 0 rgba(0,0,0,0.3), 4px 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+/* Títulos */
+h1 {
+  font-size: clamp(28px, 4vw, 50px);
+  margin-top: 5vh;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: clamp(18px, 3vw, 30px);
+  margin-top: 1vh;
+  color: #f5f5f5;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
+
+.creator {
+  margin-top: 2vh;
+  font-size: clamp(14px, 2vw, 20px);
+  color: #f5f5f5;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Grid para modos */
+.grid, .map-grid {
+  margin-top: 5vh;
+  width: 90%;
+  display: grid;
+  gap: 2vw;
+  justify-items: center;
+}
+
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.map-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.map-card {
+  position: relative;
+}
+
+.map-card img {
+  width: 100%;
+  border-radius: 14px;
+  border: 3px solid #2e2e2e;
+  transition: 0.25s;
+}
+
+.map-card img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255,255,255,0.6);
+}
+
+.map-card p {
+  margin-top: 10px;
+  font-size: clamp(16px, 2vw, 22px);
+  text-align: center;
+}
+
+/* Back */
+.back {
+  position: absolute;
+  top: 3vh;
+  left: 3vw;
+  background: #d6d6b5;
+  padding: 10px 20px;
+  border: 3px solid #2e2e2e;
+  border-radius: 10px;
+  font-size: clamp(14px, 2vw, 20px);
+  cursor: pointer;
+}
+
+/* Servers */
+.server-card {
+  background: #d6d6b5;
+  border: 3px solid #2e2e2e;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 10px 0;
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+}
+
+/* ===== SCROLL SOLO EN MAPS ===== */
+
+#mapsScreen {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 5vh;
+}
+
+#mapsScreen .map-grid {
+  margin-bottom: 10vh;
+}
+
+#mapsScreen::-webkit-scrollbar {
+  width: 8px;
+}
+
+#mapsScreen::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.4);
+  border-radius: 10px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- MAIN -->
+<div id="mainMenu" class="screen active">
+  <h1>Chicken Gun</h1>
+  <div class="subtitle">Legacy</div>
+  <div class="creator">Creado por: TheRudyPlayer</div>
+
+  <div class="menu-buttons">
+    <div class="btn">Shop</div>
+    <div class="btn" onclick="showModes()">Play</div>
+    <div class="btn" onclick="showServers()">Servers</div>
+  </div>
+</div>
+
+<!-- MODES -->
+<div id="modesScreen" class="screen">
+  <div class="back" onclick="goMain()">Back</div>
+  <h1>Select Mode</h1>
+
+  <div class="grid">
+    <div class="btn" onclick="showMaps()">Offline</div>
+    <div class="btn" onclick="showMaps()">Sandbox</div>
+    <div class="btn" onclick="showMaps()">FreeMode</div>
+    <div class="btn" onclick="showMaps()">PigBattleTeams</div>
+    <div class="btn" onclick="showMaps()">BattleRoyaleArena</div>
+  </div>
+</div>
+
+<!-- MAPS -->
+<div id="mapsScreen" class="screen">
+  <div class="back" onclick="showModes()">Back</div>
+  <h1>Select Map</h1>
+
+  <div class="map-grid">
+    <div class="map-card">
+      <img src="./assets/DustyLegacyIcon.png">
+      <p>Dusty Legacy</p>
+    </div>
+
+    <div class="map-card">
+      <img src="./assets/BigFarmSPIcon.png">
+      <p>BigFarm_SP</p>
+    </div>
+
+    <div class="map-card">
+      <img src="./assets/BRArena1Icon.png">
+      <p>BR Arena</p>
+    </div>
+
+    <div class="map-card">
+      <img src="./assets/ZombieTownBigIcon.png">
+      <p>ZombieTownBig</p>
+    </div>
+
+    <div class="map-card">
+      <img src="./assets/ChaloTownNightIcon.png">
+      <p>ChaloTownNight</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>21</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>Town4 Legacy</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>ChaloFarm05</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>ChaloBattleZone</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>ChickenData780</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>BigFarm (iOS Version)</p>
+    </div>
+    
+    <div class="map-card">
+      <img src="./assets/MissingIcon.png">
+      <p>Desert Legacy</p>
+    </div>
+    
+  </div>
+</div>
+
+<!-- SERVERS -->
+<div id="serversScreen" class="screen">
+  <div class="back" onclick="goMain()">Back</div>
+  <h1>Servers</h1>
+
+  <div class="server-card">Game72881 — ChickenData780 - 6 Players</div>
+  <div class="server-card">Game82628 — ChaloFarm02 - 12 Player</div>
+</div>
+
+<script>
+function hideAll() {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+}
+
+function showModes() {
+  hideAll();
+  document.getElementById("modesScreen").classList.add("active");
+}
+
+function showMaps() {
+  hideAll();
+  document.getElementById("mapsScreen").classList.add("active");
+}
+
+function showServers() {
+  hideAll();
+  document.getElementById("serversScreen").classList.add("active");
+}
+
+function goMain() {
+  hideAll();
+  document.getElementById("mainMenu").classList.add("active");
+}
+</script>
+
+</body>
+</html>
