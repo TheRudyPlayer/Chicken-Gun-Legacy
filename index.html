@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mapa 21</title>
+<title>Outside Map</title>
 <style>
 body { margin: 0; overflow: hidden; }
 canvas { display: block; }
@@ -19,24 +19,37 @@ import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87ceeb);
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth / window.innerHeight,
+0.1,
+1000
+);
+
 camera.position.set(0, 5, 10);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Luz
 const light = new THREE.HemisphereLight(0xffffff, 0x444444);
 light.position.set(0, 20, 0);
 scene.add(light);
 
+// Loader
 const loader = new GLTFLoader();
 
-loader.load('./assets/models/OutsideMap.glb', function(gltf) {
+loader.load('./assets/models/OutsideMap.glb',
+function(gltf) {
     scene.add(gltf.scene);
-}, undefined, function(error) {
-    console.error(error);
-});
+    console.log("Mapa cargado 😎");
+},
+undefined,
+function(error) {
+    console.error("Error cargando modelo:", error);
+}
+);
 
 function animate() {
     requestAnimationFrame(animate);
