@@ -3,18 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Outside Map</title>
+<title>Debug Map</title>
 <style>
-body { margin: 0; overflow: hidden; }
-canvas { display: block; }
+body { margin: 0; overflow: hidden; background:black; }
+#debug {
+position: fixed;
+top: 10px;
+left: 10px;
+color: red;
+font-family: monospace;
+z-index: 1000;
+}
 </style>
 </head>
 <body>
+
+<div id="debug">Cargando...</div>
 
 <script type="module">
 
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+
+const debug = document.getElementById("debug");
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87ceeb);
@@ -23,31 +34,33 @@ const camera = new THREE.PerspectiveCamera(
 75,
 window.innerWidth / window.innerHeight,
 0.1,
-1000
+2000
 );
 
-camera.position.set(0, 5, 10);
+camera.position.set(0, 30, 80);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Luz
-const light = new THREE.HemisphereLight(0xffffff, 0x444444);
-light.position.set(0, 20, 0);
+const light = new THREE.DirectionalLight(0xffffff, 3);
+light.position.set(50, 100, 50);
 scene.add(light);
 
-// Loader
+scene.add(new THREE.AmbientLight(0xffffff, 1));
+
 const loader = new GLTFLoader();
 
 loader.load('./assets/models/OutsideMap.glb',
 function(gltf) {
+
     scene.add(gltf.scene);
-    console.log("Mapa cargado 😎");
+    debug.innerText = "Mapa cargado 😎";
+
 },
 undefined,
 function(error) {
-    console.error("Error cargando modelo:", error);
+    debug.innerText = "ERROR: " + error.message;
 }
 );
 
